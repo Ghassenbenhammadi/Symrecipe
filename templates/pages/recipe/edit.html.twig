@@ -4,7 +4,7 @@
 {% endblock title %}
 {% block body %}
     <div class="container">
-        <h1 class="mt-4">Création d'une recette</h1>
+        <h1 class="mt-4">Modifié une recette</h1>
         {{ form_start(form) }}
         <div class="form-group">
             {{ form_label(form.name) }}
@@ -50,6 +50,7 @@
                 {{ form_errors(form.price) }}
             </div>
         </div>
+
         <div class="form-check mt-4">
             {{ form_widget(form.isFavorite) }}
             {{ form_label(form.isFavorite) }}
