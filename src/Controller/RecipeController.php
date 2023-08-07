@@ -7,6 +7,8 @@ use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +32,36 @@ class RecipeController extends AbstractController
             'recipes'         => $recipes,
         ]);
     }
+
+
+    #[Route('/recette/publique', name: 'recipe.public', methods:['GET', 'POST'])]
+    public function indexPublic(
+      RecipeRepository $recipeRepository,
+      PaginatorInterface $paginator,
+      Request $request
+
+    ): Response
+    {
+      $recipes = $paginator->paginate(
+        $recipeRepository->findPublicRecipe(null), /* query NOT result */
+        $request->query->getInt('page', 1), /*page number*/
+        10 /*limit per page*/
+    );
+      return $this->render('pages/recipe/index_public.html.twig',[
+      'recipes' => $recipes,
+      ]);
+    }
+
+    #[Security("is_granted('ROLE_USER') and recipe.getIsPublic() === true")]
+    #[Route('/recette/{id}', name: 'recipe.show', methods:['GET', 'POST'])]
+    public function show( Recipe $recipe):Response
+    {
+      return $this->render('pages/recipe/show.html.twig',
+      [
+        'recipe' => $recipe
+      ]);
+    }
+
 
     #[Route('/recette/nouveau', name: 'recipe.new', methods:['GET','POST'])]
     public function new(
@@ -56,7 +88,7 @@ class RecipeController extends AbstractController
         ]
     );
     }
-
+    #[Security("is_granted('ROLE_USER) and user === recipe.getUser()")]
     #[Route('/recette/edition/{id}', name: 'recipe.edit', methods:['GET','POST'])]
     public function edit(
        Recipe $recipe,
