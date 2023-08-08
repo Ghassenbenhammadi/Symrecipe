@@ -37,7 +37,7 @@ class IngredientController extends AbstractController
         ]);
     }
 
-    #[Route('/ingredient/nouveau', name: 'ingredient.new', methods:['GET','POST'])]
+    #[Route('/ingredient/creation', name: 'ingredient.new', methods:['GET','POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(
     EntityManagerInterface $manager,
@@ -61,29 +61,39 @@ class IngredientController extends AbstractController
           'form'=> $form->createView()
         ]);
     }
-    #[Security("is_granted('ROLE_USER') and user ===ingredient.getUser()")]
-    #[Route('/ingredient/edition/{id}', name: 'ingredient.edit', methods:['GET','POST'])]
-    public function edit(
-       Ingredient $ingredient,
-       Request $request,
-       EntityManagerInterface $manager
-       ): Response
 
-    {
-      
-      $form = $this->createForm(IngredientType::class, $ingredient);
-      $form->handleRequest($request);
-      if ($form->isSubmitted() && $form->isValid()) {
-         $ingredient= $form->getData();
-         $manager->persist($ingredient);
-         $manager->flush();
-         $this->addFlash('success','Votre ingrédient a été modifié avec succés !');
-         return $this->redirectToRoute('app_ingredient');
-      }  
-      return $this->render('pages/ingredient/edit.html.twig',[
-          'form' => $form->createView()
+
+    #[Security("is_granted('ROLE_USER') and user === ingredient.getUser()")]
+    #[Route('/ingredient/edition/{id}', 'ingredient.edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Ingredient $ingredient,
+        Request $request,
+        EntityManagerInterface $manager
+    ): Response {
+        $form = $this->createForm(IngredientType::class, $ingredient);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $ingredient = $form->getData();
+
+            $manager->persist($ingredient);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre ingrédient a été modifié avec succès !'
+            );
+
+            return $this->redirectToRoute('app_ingredient');
+        }
+
+        return $this->render('pages/ingredient/edit.html.twig', [
+            'form' => $form->createView()
         ]);
     }
+
+    
+#[Security("is_granted('ROLE_USER') and user === ingredient.getUser()")]
 #[Route('/ingredient/suppression/{id}', 'ingredient.delete', methods: ['GET'])]
   public function delete(
     EntityManagerInterface $manager,

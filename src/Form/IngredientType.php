@@ -47,6 +47,7 @@ class IngredientType extends AbstractType
                 'attr' => [
                     'class' =>'btn btn-primary mt-4'
                 ],
+                'label' => ''
             ])
         ;
     }
