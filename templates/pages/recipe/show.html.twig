@@ -7,9 +7,18 @@ SymRecipe - {{ recipe.name }}
 
 {% block body %}
 <div class="container">
+    {% for message in app.flashes('success') %}
+    <div class="alert alert-success mt-4">
+        {{ message }}
+    </div>
+{% endfor %}
     <h1 class="mt-4">
         {{ recipe.name }}
     </h1>
+    <div class="recipe__image">
+        <img style="max-width: 100%" src="{{ vich_uploader_asset(recipe, 'imageFile') }}" >
+    </div>
+    <p>La moyenne de cette recette est de {{ recipe.average|number_format(2, '.', ',') }} /5</p>
     <div  class="mt-4">
         <h1 class="mt-4">
             <span class="badge bg-primary">Créer le {{ recipe.createdAt|date('d/m/Y')}}</span>
@@ -60,6 +69,10 @@ SymRecipe - {{ recipe.name }}
     {% for ingredient  in recipe.ingredients %}
         <span class="badge bg-primary">{{ ingredient.name }}</span>
     {% endfor %}
-     
+
+
+    <div class="mark">
+        {{ form(form) }}
+    </div>
 </div>
 {% endblock body %}

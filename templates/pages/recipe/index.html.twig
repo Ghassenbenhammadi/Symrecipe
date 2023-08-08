@@ -4,17 +4,18 @@
 
 {% block body %}
     <div class="container mt-3">
-      {%  if not recipes.items is same as([]) %}
-        <h1>Mes recettes</h1>
-        <a href="{{ path('recipe.new') }}" class="btn btn-primary mt-4"> Créer Nouveau</a>
-        {% for message in app.flashes('success') %}
+      {% for message in app.flashes('success') %}
         <div class="alert alert-success mt-4">
             {{ message }}
         </div>
     {% endfor %}
+      {%  if not recipes.items is same as([]) %}
+        <h1>Mes recettes</h1>
+        <a href="{{ path('recipe.new') }}" class="btn btn-primary mt-4"> Créer Nouveau</a>
+        
         <div class="count mt-4">
           <h4>
-            il y a {{ recipes.getTotalItemCount }} recettes
+            il y a {{ recipes.getTotalItemCount }} recette(s)
           </h4>
       </div>
         <table class="table table-hover mt-4">
@@ -35,7 +36,7 @@
                     <th scope="row">{{ recipe.id }}</th>
                     <td>{{ recipe.name }}</td>
                     <td> {% if recipe.price is null %} Non renseigné {% else %}
-                        {{ recipe.price }}                        
+                        {{ recipe.price|number_format(2, '.', ',') }} €                       
                     {% endif %}</td>
                     <td> {% if recipe.difficulty is null %} Nom renseigné {% else %}
                         {{ recipe.difficulty }}                        
@@ -56,7 +57,9 @@
         </div>
         {% else %}
         <h4>Il n'y a pas des recettes</h4>
+        <a href="{{ path('recipe.new') }}" class="btn btn-primary mt-4"> Créer Nouveau</a>
         {% endif %}
+       
     </div>
 {% endblock %}
 

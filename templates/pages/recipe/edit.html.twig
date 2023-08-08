@@ -5,7 +5,7 @@
 {% block body %}
     <div class="container">
         <h1 class="mt-4">Modifié une recette</h1>
-        {{ form_start(form) }}
+        <form name="recipe" method="post">
         <div class="form-group">
             {{ form_label(form.name) }}
             {{ form_widget(form.name) }}
@@ -13,7 +13,7 @@
                 {{ form_errors(form.name) }}
             </div>
         </div>
-
+        {{ form_row(form.imageFile) }}
         <div class="form-group">
             {{ form_label(form.nbPeople) }}
             {{ form_widget(form.nbPeople) }}
@@ -59,6 +59,9 @@
             </div>
           </div>
         {{ form_row(form.ingredients) }}
-        {{ form_end(form) }}
+
+        {{ form_row(form._token) }}
+        <button type="submit" id="ingredient_submit" name="ingredient[submit]" class="btn btn-primary mt-4">Modifier mon recette</button>
+       </form>
     </div>
 {% endblock body %}
