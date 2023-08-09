@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230808084411 extends AbstractMigration
+final class Version20230808163012 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,10 +20,13 @@ final class Version20230808084411 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE SEQUENCE contact_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE ingredient_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE mark_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE recipe_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE TABLE contact (id INT NOT NULL, fullname VARCHAR(50) DEFAULT NULL, email VARCHAR(180) NOT NULL, subject VARCHAR(100) DEFAULT NULL, message TEXT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON COLUMN contact.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE ingredient (id INT NOT NULL, user_id INT NOT NULL, name VARCHAR(50) NOT NULL, price DOUBLE PRECISION NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_6BAF7870A76ED395 ON ingredient (user_id)');
         $this->addSql('COMMENT ON COLUMN ingredient.created_at IS \'(DC2Type:datetime_immutable)\'');
@@ -66,6 +69,7 @@ final class Version20230808084411 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
+        $this->addSql('DROP SEQUENCE contact_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE ingredient_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE mark_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE recipe_id_seq CASCADE');
@@ -76,6 +80,7 @@ final class Version20230808084411 extends AbstractMigration
         $this->addSql('ALTER TABLE recipe DROP CONSTRAINT FK_DA88B137A76ED395');
         $this->addSql('ALTER TABLE recipe_ingredient DROP CONSTRAINT FK_22D1FE1359D8A214');
         $this->addSql('ALTER TABLE recipe_ingredient DROP CONSTRAINT FK_22D1FE13933FE08C');
+        $this->addSql('DROP TABLE contact');
         $this->addSql('DROP TABLE ingredient');
         $this->addSql('DROP TABLE mark');
         $this->addSql('DROP TABLE recipe');
