@@ -157,7 +157,7 @@ class RecipeController extends AbstractController
     ): Response
   {
     if (!$recipe) {
-      $this->addFlash('success','Recette n\'exixte pas');
+      $this->addFlash('success','Recette n\'existe pas');
       return $this->redirectToRoute('app_recipe');
     }
     $manager->remove($recipe);
