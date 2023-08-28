@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class RecipeController extends AbstractController
 {
@@ -39,14 +41,20 @@ class RecipeController extends AbstractController
 
     #[Route('/recette/communaute', name: 'recipe.community', methods:['GET'])]
     public function indexPublic(
-      RecipeRepository $recipeRepository,
+      RecipeRepository $repository,
       PaginatorInterface $paginator,
       Request $request
 
     ): Response
     {
+
+      $cache = new FilesystemAdapter();
+      $data = $cache->get('recipes', function(ItemInterface $item) use ($repository) {
+        $item->expiresAfter(15);
+        return $repository->findPublicRecipe(null);
+      });
       $recipes = $paginator->paginate(
-        $recipeRepository->findPublicRecipe(null), /* query NOT result */
+        $data, /* query NOT result */
         $request->query->getInt('page', 1), /*page number*/
         10 /*limit per page*/
     );
